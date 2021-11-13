@@ -28,18 +28,19 @@ class App extends React.Component {
     upload = () => {
         const {file} = this.state;
         const formData = new FormData();
+        if(file) {
+            formData.append(
+                "file",
+                file,
+                file.name
+            );
 
-        formData.append(
-            "file",
-            file,
-            file.name
-        );
-
-        axios.post('http://localhost:4245/file/read', formData)
-            .then(res => {
-                this.setState({accountNumbers: res.data})
-                console.log(res.data)
-            })
+            axios.post('http://localhost:4245/file/read', formData)
+                .then(res => {
+                    this.setState({accountNumbers: res.data})
+                    console.log(res.data)
+                })
+        }
 
     }
 
