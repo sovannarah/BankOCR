@@ -22,6 +22,18 @@ const digitsCode = {
     "010022200110": 9,
 }
 
+
+function calcAccountNumber(num) {
+    if (num.length === 1) return parseInt(num[0]);
+    const calc = num.length * parseInt(num.shift());
+    return calc + calcAccountNumber(num);
+}
+
+function checkAccountNumber(number) {
+    const validNumber = calcAccountNumber(number) % 11 === 0;
+    return (validNumber) ? "VAL" : "ERR";
+}
+
 function getDigit(code) {
     return digitsCode[code];
 }
@@ -40,7 +52,9 @@ function getDigitFromLines(line) {
             }
         }
     }
-    return {number: digits.join(''), lineMap: line};
+    const status = checkAccountNumber([...digits]);
+    console.log(status)
+    return {number: digits.join(''), lineMap: line, status};
 }
 
 function getEveryLines(arrDigitsNumbers, numbers = []) {
