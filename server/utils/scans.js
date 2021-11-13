@@ -2,21 +2,37 @@ const digitHeight = 4;
 const digitWidth = 3;
 const numberOfDigit = 9;
 const numberOfColumn = digitWidth * numberOfDigit;
+const nbCellInDigit = digitHeight * digitWidth;
+
 const charValue = {
     "|": 1,
     "_": 0,
 }
 
 
+function getDigitFromLines(line) {
+    let digits = [];
+    let code = '';
+    for (let column = 0; column < numberOfColumn; column++) {
+        for (let l = 0; l < digitHeight; l++) {
+            code += line[l][column];
+            if (code.length === nbCellInDigit) {
+                digits.push(code);
+                code = '';
+            }
+        }
+    }
+    return digits;
+}
 
-function extractEveryLines(arrDigitsNumbers, numbers = []) {
+function getEveryLines(arrDigitsNumbers, numbers = []) {
     if (arrDigitsNumbers.length === 0) return numbers;
     const line = [];
     for (let i = 0; i < digitHeight; i++) {
         line.push(arrDigitsNumbers.shift());
     }
-    numbers.push(line);
-    return extractEveryLines(arrDigitsNumbers, numbers);
+    numbers.push(getDigitFromLines(line));
+    return getEveryLines(arrDigitsNumbers, numbers);
 }
 
 function charToDigit(char) {
@@ -66,7 +82,7 @@ function refactorContentFile(contentFile) {
 function scansFile(contentFile) {
     const refactorData = refactorContentFile(contentFile);
     const numToArr = numbersToArray(refactorData);
-    const lines = extractEveryLines(numToArr);
+    const lines = getEveryLines(numToArr);
     return lines;
 }
 
