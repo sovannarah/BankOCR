@@ -21,11 +21,17 @@ router.post('/read', async (req, res, next) => {
                     if (err) {
                         console.error(err);
                     }
-                    res.send(scansFile(data));
+                    scansFile(data)
+                        .then(() => res.download('./numbersAccounts.txt'))
+                        .catch(err => res.send({status: 500, message: err}))
                 })
             }
         })
     })
+})
+
+router.get("/test", async (req, res) => {
+    res.download('./numbers.txt')
 })
 
 module.exports = router;

@@ -25,6 +25,15 @@ class App extends React.Component {
         this.setState({ file: event.target.files[0] });
     };
 
+    download = (response) => {
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', 'numberAccounts.txt');
+        document.body.appendChild(link);
+        link.click();
+    }
+
     upload = () => {
         const {file} = this.state;
         const formData = new FormData();
@@ -39,15 +48,18 @@ class App extends React.Component {
                 .then(res => {
                     this.setState({accountNumbers: res.data})
                     console.log(res.data)
+                    this.download(res);
                 })
         }
 
     }
 
+
     render() {
         const {accountNumbers} = this.state;
         return (
             <div className="App">
+                <a href={'http://localhost:4245/file/test'} download>test</a>
                 <input type="file" onChange={this.onFileChange} />
                 <button onClick={this.upload}>Upload</button>
                 <Accounts accountNumbers={accountNumbers}/>
