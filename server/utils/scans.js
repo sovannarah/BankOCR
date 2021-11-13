@@ -40,8 +40,7 @@ function getDigitFromLines(line) {
             }
         }
     }
-    console.log(line)
-    return {number: digits.join('')};
+    return {number: digits.join(''), lineMap: line};
 }
 
 function getEveryLines(arrDigitsNumbers, numbers = []) {
