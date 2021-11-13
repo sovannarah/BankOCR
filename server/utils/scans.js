@@ -6,9 +6,25 @@ const nbCellInDigit = digitHeight * digitWidth;
 
 const charValue = {
     "|": 1,
-    "_": 0,
+    "_": 2,
 }
 
+const digitsCode = {
+    "011020200110": 0,
+    "000000000110": 1,
+    "001022200100": 2,
+    "000022200110": 3,
+    "010002000110": 4,
+    "010022200010": 5,
+    "011022200010": 6,
+    "000020000110": 7,
+    "011022200110": 8,
+    "010022200110": 9,
+}
+
+function getDigit(code) {
+    return digitsCode[code];
+}
 
 function getDigitFromLines(line) {
     let digits = [];
@@ -17,7 +33,8 @@ function getDigitFromLines(line) {
         for (let l = 0; l < digitHeight; l++) {
             code += line[l][column];
             if (code.length === nbCellInDigit) {
-                digits.push(code);
+                const digit = getDigit(code)
+                digits.push(digit);
                 code = '';
             }
         }
