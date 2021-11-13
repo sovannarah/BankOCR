@@ -39,7 +39,7 @@ function getDigitFromLines(line) {
             }
         }
     }
-    return digits;
+    return digits.join('');
 }
 
 function getEveryLines(arrDigitsNumbers, numbers = []) {
