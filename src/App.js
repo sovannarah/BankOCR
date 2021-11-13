@@ -7,6 +7,7 @@ class App extends React.Component {
   componentDidMount() {
     axios.get('http://localhost:4245/file/read')
         .then(res => {
+            console.log(res.data)
         })
   }
 

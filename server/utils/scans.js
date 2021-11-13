@@ -7,6 +7,18 @@ const charValue = {
     "_": 0,
 }
 
+
+
+function extractEveryLines(arrDigitsNumbers, numbers = []) {
+    if (arrDigitsNumbers.length === 0) return numbers;
+    const line = [];
+    for (let i = 0; i < digitHeight; i++) {
+        line.push(arrDigitsNumbers.shift());
+    }
+    numbers.push(line);
+    return extractEveryLines(arrDigitsNumbers, numbers);
+}
+
 function charToDigit(char) {
     const value = charValue[char];
     return value ? value : 0;
@@ -54,7 +66,8 @@ function refactorContentFile(contentFile) {
 function scansFile(contentFile) {
     const refactorData = refactorContentFile(contentFile);
     const numToArr = numbersToArray(refactorData);
-    console.log(numToArr)
+    const lines = extractEveryLines(numToArr);
+    return lines;
 }
 
 module.exports = {scansFile};

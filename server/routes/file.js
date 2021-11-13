@@ -8,7 +8,7 @@ router.get('/read', async (req, res, next) => {
         if (err) {
             console.error(err);
         }
-        scansFile(data);
+        res.send(scansFile(data));
     })
 })
 
