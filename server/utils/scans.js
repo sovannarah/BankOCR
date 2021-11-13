@@ -2,7 +2,22 @@ const digitHeight = 4;
 const digitWidth = 3;
 const numberOfDigit = 9;
 const numberOfColumn = digitWidth * numberOfDigit;
-console.log(numberOfColumn)
+
+function numbersToArray(strNumbers) {
+    let i = 0;
+    let arr = [];
+    let line = [];
+    while (strNumbers[i]) {
+        const char = strNumbers[i];
+        line.push(char);
+        i++;
+        if (i > 0 && i % numberOfColumn === 0) {
+            arr.push(line);
+            line = [];
+        }
+    }
+    return arr;
+}
 
 function refactorContentFile(contentFile) {
     const strToArrFile = `${contentFile}`.split("\r\n");
@@ -29,7 +44,8 @@ function refactorContentFile(contentFile) {
 
 function scansFile(contentFile) {
     const refactorData = refactorContentFile(contentFile);
-    console.log(refactorData)
+    const numToArr = numbersToArray(refactorData);
+    console.log(numToArr)
 }
 
 module.exports = {scansFile};
