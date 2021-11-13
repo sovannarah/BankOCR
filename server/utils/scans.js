@@ -2,6 +2,15 @@ const digitHeight = 4;
 const digitWidth = 3;
 const numberOfDigit = 9;
 const numberOfColumn = digitWidth * numberOfDigit;
+const charValue = {
+    "|": 1,
+    "_": 0,
+}
+
+function charToDigit(char) {
+    const value = charValue[char];
+    return value ? value : 0;
+}
 
 function numbersToArray(strNumbers) {
     let i = 0;
@@ -9,7 +18,7 @@ function numbersToArray(strNumbers) {
     let line = [];
     while (strNumbers[i]) {
         const char = strNumbers[i];
-        line.push(char);
+        line.push(charToDigit(char));
         i++;
         if (i > 0 && i % numberOfColumn === 0) {
             arr.push(line);
