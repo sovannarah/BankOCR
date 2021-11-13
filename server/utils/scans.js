@@ -30,12 +30,14 @@ function calcAccountNumber(num) {
 }
 
 function checkAccountNumber(number) {
+    if (number.includes('?')) return 'ILL';
     const validNumber = calcAccountNumber(number) % 11 === 0;
-    return (validNumber) ? "VAL" : "ERR";
+    return (validNumber) ? "" : "ERR";
 }
 
 function getDigit(code) {
-    return digitsCode[code];
+    const digit =  digitsCode[code];
+    return (digit !== undefined) ? digit : '?';
 }
 
 function getDigitFromLines(line) {
