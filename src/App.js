@@ -1,6 +1,7 @@
 import React from 'react';
 import './App.css';
 import axios from "axios";
+import Accounts from "./components/Accounts/Accounts";
 
 class App extends React.Component {
 
@@ -23,18 +24,7 @@ class App extends React.Component {
         const {accountNumbers} = this.state;
         return (
             <div className="App">
-                <pre>
-                {accountNumbers.map(({number, lineMap}, index) => (
-                    <div key={index} className={'account'}>
-                        {lineMap.map((line, i) => (
-                            <div key={i} className={'line'}>
-                                {line.map(char => char)}
-                            </div>
-                        ))}
-                        <p>{number}</p>
-                    </div>
-                ))}
-                    </pre>
+                <Accounts accountNumbers={accountNumbers}/>
             </div>
         )
     }
