@@ -31,7 +31,8 @@ function getDigitFromLines(line) {
     let code = '';
     for (let column = 0; column < numberOfColumn; column++) {
         for (let l = 0; l < digitHeight; l++) {
-            code += line[l][column];
+            const char = line[l][column];
+            code +=  charToDigit(char);
             if (code.length === nbCellInDigit) {
                 const digit = getDigit(code)
                 digits.push(digit);
@@ -39,7 +40,8 @@ function getDigitFromLines(line) {
             }
         }
     }
-    return digits.join('');
+    console.log(line)
+    return {number: digits.join('')};
 }
 
 function getEveryLines(arrDigitsNumbers, numbers = []) {
@@ -63,7 +65,7 @@ function numbersToArray(strNumbers) {
     let line = [];
     while (strNumbers[i]) {
         const char = strNumbers[i];
-        line.push(charToDigit(char));
+        line.push(char);
         i++;
         if (i > 0 && i % numberOfColumn === 0) {
             arr.push(line);
