@@ -1,0 +1,7 @@
+.info__number {
+    display: flex;
+}
+
+.info__number p {
+    margin-right: 6vw;
+}
