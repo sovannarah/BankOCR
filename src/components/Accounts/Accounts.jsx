@@ -7,9 +7,9 @@ class Accounts extends Component {
         return (
 
             <pre>
-                {/*{accountNumbers.map((account, index) => (*/}
-                {/*    <Account  key={index} account={account}/>*/}
-                {/*))}*/}
+                {accountNumbers.map((account, index) => (
+                    <Account  key={index} account={account}/>
+                ))}
             </pre>
 
         );

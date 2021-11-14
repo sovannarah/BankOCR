@@ -4,7 +4,7 @@ import './Account.css';
 class Account extends Component {
     render() {
         const {account} = this.props;
-        const {lineMap, number, status} = account;
+        const {lineMap, number, status, possibilities} = account;
         return (
             <div className={'account'}>
                 {lineMap.map((line, i) => (
@@ -15,6 +15,15 @@ class Account extends Component {
                 <div className={'info__number'}>
                     <p>{number}</p>
                     <p>{status}</p>
+                    {possibilities &&
+                    <p>
+                        [
+                    {possibilities.slice(0, 3).map((possibility, index) => (
+                         <span key={index}>{possibility},</span>
+                        ))}
+                        ...]
+                    </p>
+                    }
                 </div>
             </div>
         );

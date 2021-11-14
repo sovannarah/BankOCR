@@ -13,20 +13,13 @@ class App extends React.Component {
         }
     }
 
-    componentDidMount() {
-        // axios.get('http://localhost:4245/file/read')
-        //     .then(res => {
-        //         this.setState({accountNumbers: res.data})
-        //         console.log(res.data)
-        //     })
-    }
 
     onFileChange = event => {
         this.setState({ file: event.target.files[0] });
     };
 
-    download = (response) => {
-        const url = window.URL.createObjectURL(new Blob([response.data]));
+    download = (filename) => {
+        const url = 'http://localhost:4245/file/download/' + filename;
         const link = document.createElement('a');
         link.href = url;
         link.setAttribute('download', 'numberAccounts.txt');
@@ -46,10 +39,10 @@ class App extends React.Component {
 
             axios.post('http://localhost:4245/file/read', formData)
                 .then(res => {
-                    this.setState({accountNumbers: res.data})
-                    console.log(res.data)
-                    this.download(res);
+                    this.setState(() => ({accountNumbers: res.data.data}));
+                    this.download(res.data.filename);
                 })
+                .catch(err => console.error(err))
         }
 
     }
@@ -57,6 +50,7 @@ class App extends React.Component {
 
     render() {
         const {accountNumbers} = this.state;
+        console.log(this.state)
         return (
             <div className="App">
                 <input type="file" onChange={this.onFileChange} />

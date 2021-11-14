@@ -9,29 +9,27 @@ router.post('/read', async (req, res, next) => {
     let form = new formidable.IncomingForm();
     form.parse(req, (err, fields, files) => {
         let oldPath = files.file.filepath;
-        let newPath = './numbers.txt';
-        if (fs.existsSync(newPath)) {
-            fs.unlink(newPath, err => {
-                if (err) throw err;
-            });
-        }
+        const newFilename = files.file.newFilename;
+        let newPath = `./${newFilename}.txt`;
         mv(oldPath, newPath, {mkdirp: true}, err => {
             if (!err) {
                 fs.readFile(newPath, 'utf8', (err, data) => {
                     if (err) {
                         console.error(err);
                     }
-                    scansFile(data)
-                        .then(() => res.download('./numbersAccounts.txt'))
-                        .catch(err => res.send({status: 500, message: err}))
+                    scansFile(data, newFilename)
+                        .then((result) => {
+                            res.send({data: result, filename: newFilename})
+                        })
+                        .catch(err => res.status(500).send(err))
                 })
             }
         })
     })
 })
 
-router.get("/test", async (req, res) => {
-    res.download('./numbers.txt')
+router.get("/download/:filename", async (req, res) => {
+    res.download(`./${req.params.filename}.txt`)
 })
 
 module.exports = router;

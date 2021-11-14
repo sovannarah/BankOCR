@@ -25,15 +25,15 @@ const digitsCode = {
 
 function match(code) {
     const match = [];
-    for(const [key, value] of Object.entries(digitsCode)) {
+    for (const [key, value] of Object.entries(digitsCode)) {
         let add = 0;
         let remove = 0;
-        for(let i = 0; i < code.length - 1; i++) {
-            if(key[i] == code[i]) continue;
-            if(code[i] == 0 && key[i] != 0) add++;
-            if(code[i] != 0 && key[i] == 0) remove++;
+        for (let i = 0; i < code.length - 1; i++) {
+            if (key[i] == code[i]) continue;
+            if (code[i] == 0 && key[i] != 0) add++;
+            if (code[i] != 0 && key[i] == 0) remove++;
         }
-        if(add + remove > 1) continue;
+        if (add + remove > 1) continue;
         match.push(value);
     }
     return match;
@@ -48,14 +48,15 @@ function refactorDataForFile(data) {
     return str
 }
 
-function writeFile(data) {
+function writeFile(data, filename) {
     return new Promise(((resolve, reject) => {
-        fs.writeFile('numbersAccounts.txt', refactorDataForFile(data), function (err) {
+        fs.writeFile(`${filename}.txt`, refactorDataForFile(data), function (err) {
             if (err) {
-                console.log(err)
+                console.error(err)
                 return reject(err)
+            } else {
+                resolve(data);
             }
-            resolve('success')
         });
     }))
 }
@@ -75,26 +76,27 @@ function checkAccountNumber(number) {
 
 function getDigit(code) {
     const digit = digitsCode[code];
-    console.log(match(code))
     return (digit !== undefined) ? digit : '?';
 }
 
 function getDigitFromLines(line) {
     let digits = [];
     let code = '';
+    let codeMap = [];
     for (let column = 0; column < numberOfColumn; column++) {
         for (let l = 0; l < digitHeight; l++) {
             const char = line[l][column];
             code += charToDigit(char);
             if (code.length === nbCellInDigit) {
-                const digit = getDigit(code)
+                codeMap.push(code);
+                const digit = getDigit(code);
                 digits.push(digit);
                 code = '';
             }
         }
     }
     const status = checkAccountNumber([...digits]);
-    return {number: digits.join(''), lineMap: line, status};
+    return {number: digits.join(''), lineMap: line, status, codeMap};
 }
 
 function getEveryLines(arrDigitsNumbers, numbers = []) {
@@ -151,15 +153,96 @@ function refactorContentFile(contentFile) {
     return 'ERROR FILE';
 }
 
-function scansFile(contentFile) {
+function getCombinations(arr, pre) {
+    pre = pre || '';
+    if (!arr.length) {
+        return pre;
+    }
+    const ans = arr[0].reduce(function (ans, value) {
+        return ans.concat(getCombinations(arr.slice(1), pre + value));
+    }, []);
+    return ans;
+}
+
+function checkERR(numberInfo) {
+    const combinations = [];
+    for (let i = 0; i < numberInfo.number.length; i++) {
+        const code = numberInfo.codeMap[i];
+        const matches = match(code);
+        combinations.push(matches);
+    }
+    return combinations;
+}
+
+function checkILL(numberInfo) {
+    const combinations = [];
+    for (let i = 0; i < numberInfo.number.length; i++) {
+        let digit = numberInfo.number[i];
+        if (digit === '?') {
+            const code = numberInfo.codeMap[i];
+            const matches = match(code);
+            combinations.push(matches.length > 0 ? matches : digit);
+        } else {
+            combinations.push([digit]);
+        }
+    }
+    if (combinations.includes('?')) {
+        return 'ILL';
+    } else {
+        return combinations;
+    }
+}
+
+
+function checkNumbers(numbers) {
+    numbers.map(numberInfo => {
+        const possibilities = [];
+        if (numberInfo.status !== "") {
+            let tryFix;
+            if (numberInfo.status === 'ILL') {
+                tryFix = checkILL(numberInfo);
+            } else {
+                tryFix = checkERR(numberInfo);
+            }
+            if (tryFix !== 'ILL') {
+                const combinations = getCombinations(tryFix);
+                combinations.forEach(combination => {
+                    const possibility = checkAccountNumber([...combination]);
+                    if (possibility === '') {
+                        possibilities.push(combination);
+                    }
+
+                })
+            }
+        }
+        if (possibilities.length === 1) {
+            numberInfo.number = possibilities[0];
+            numberInfo.status = '';
+        }
+        if (possibilities.length > 1) {
+            numberInfo.possibilities = possibilities;
+            numberInfo.status = 'AMB';
+        }
+        return numberInfo;
+    })
+    return numbers;
+}
+
+function scansFile(contentFile, filename) {
     return new Promise(((resolve, reject) => {
-    const refactorData = refactorContentFile(contentFile);
-    const numToArr = numbersToArray(refactorData);
-    const lines = getEveryLines(numToArr);
-    console.log(lines)
-    writeFile(lines)
-        .then(() => resolve(lines))
-        .catch(err => reject(err))
+        const refactorData = refactorContentFile(contentFile);
+        if (refactorData === 'ERROR FILE') {
+            reject('ERROR FILE');
+        } else {
+            const numToArr = numbersToArray(refactorData);
+            const lines = getEveryLines(numToArr);
+            const checkedNumbers = checkNumbers(lines);
+            writeFile(checkedNumbers, filename)
+                .then(() => {
+                    resolve(checkedNumbers)
+                })
+                .catch(err => reject(err))
+        }
     }))
 }
 
