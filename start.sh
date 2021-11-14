@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cd client/server
+cd server
 yarn
 cd ..
 yarn
