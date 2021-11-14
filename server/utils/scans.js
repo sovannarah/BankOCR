@@ -23,6 +23,23 @@ const digitsCode = {
     "010022200110": 9,
 }
 
+function match(code) {
+    const match = [];
+    for(const [key, value] of Object.entries(digitsCode)) {
+        let add = 0;
+        let remove = 0;
+        for(let i = 0; i < code.length - 1; i++) {
+            if(key[i] == code[i]) continue;
+            if(code[i] == 0 && key[i] != 0) add++;
+            if(code[i] != 0 && key[i] == 0) remove++;
+        }
+        if(add + remove > 1) continue;
+        match.push(value);
+    }
+    return match;
+}
+
+
 function refactorDataForFile(data) {
     let str = '';
     data.forEach(data => {
@@ -58,6 +75,7 @@ function checkAccountNumber(number) {
 
 function getDigit(code) {
     const digit = digitsCode[code];
+    console.log(match(code))
     return (digit !== undefined) ? digit : '?';
 }
 
@@ -76,7 +94,6 @@ function getDigitFromLines(line) {
         }
     }
     const status = checkAccountNumber([...digits]);
-    console.log(status)
     return {number: digits.join(''), lineMap: line, status};
 }
 

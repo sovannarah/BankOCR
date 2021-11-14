@@ -59,7 +59,6 @@ class App extends React.Component {
         const {accountNumbers} = this.state;
         return (
             <div className="App">
-                <a href={'http://localhost:4245/file/test'} download>test</a>
                 <input type="file" onChange={this.onFileChange} />
                 <button onClick={this.upload}>Upload</button>
                 <Accounts accountNumbers={accountNumbers}/>
